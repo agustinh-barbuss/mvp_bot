@@ -1,35 +1,52 @@
 ﻿
 project:
-name: btc_mvp_bot
+  name: btc_mvp_bot
 
 market:
-exchange: binance
-symbol: BTC/USDT
-timeframe: 1h
-start_date: 2019-01-01
+  exchange: binance
+  symbol: BTC/USDT
+  timeframe: 1h
+  start_date: 2019-01-01
 
 costs:
-fee_bps: 7.5
-slippage_bps: 2.0
+  fee_bps: 7.5
+  slippage_bps: 2.0
 
 strategy:
-name: ema_atr_trend
-ema_fast: 20
-ema_slow: 50
-atr_period: 14
-sl_atr_mult: 1.5
-tp_atr_mult: 3.0
+  name: ema_atr_trend
+  ema_fast: 20
+  ema_slow: 50
+  atr_period: 14
+  sl_atr_mult: 1.5
+  tp_atr_mult: 3.0
+  min_atr_ratio: 0.002        # 0.2% (ajustable)
+  slope_lookback: 3           # velas para pendiente de EMA slow
+  donchian_n: 20
+  atr_trail_mult: 3.0
+  min_atr_ratio: 0.0015
+  breakout_buffer: 0.001
+  atr_exp_mult: 1.05
+  
+
+
+backtest:
+  direction: both
+  initial_equity: 10000
+  risk_per_trade: 0.01
 
 validation:
-train_start: 2019-01-01
-train_end: 2023-12-31
-test_start: 2024-01-01
-test_end: 2025-12-31
+  train_start: 2019-01-01
+  train_end: 2023-12-31
+  test_start: 2024-01-01
+  test_end: 2026-01-19
 
 sentiment:
-enabled: false
-source: fear_greed
-mode: filter
-long_min: 40
-short_max: 60
+  enabled: true
+  source: fear_greed
+  mode: filter
+  long_min: 40
+  short_max: 60
+  fng_floor_mult: 0.50   # piso del modulador (0.50 = reduce hasta la mitad)
+
+  
 
