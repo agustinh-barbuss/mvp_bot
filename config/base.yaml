@@ -46,7 +46,7 @@ sentiment:
   mode: filter
   long_min: 40
   short_max: 60
-  fng_floor_mult: 0.50   # piso del modulador (0.50 = reduce hasta la mitad)
+  fng_floor_mult: 0.1   # piso del modulador (0.50 = reduce hasta la mitad)
 
   
 
