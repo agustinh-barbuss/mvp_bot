@@ -170,6 +170,47 @@ def atr_wilder(df: pd.DataFrame, period: int) -> pd.Series:
 
     return rma_wilder(tr, period)
 
+def _wilder_ema(series: pd.Series, period: int) -> pd.Series:
+    # Wilder smoothing = EMA con alpha = 1/period
+    return series.ewm(alpha=1.0 / period, adjust=False).mean()
+
+
+def compute_adx(high: pd.Series, low: pd.Series, close: pd.Series, period: int = 14) -> pd.Series:
+    """
+    ADX clásico (Welles Wilder) usando Wilder smoothing.
+    high/low/close deben estar indexados por datetime y sin huecos grandes.
+    """
+    high = high.astype(float)
+    low = low.astype(float)
+    close = close.astype(float)
+
+    prev_high = high.shift(1)
+    prev_low = low.shift(1)
+    prev_close = close.shift(1)
+
+    up_move = high - prev_high
+    down_move = prev_low - low
+
+    plus_dm = np.where((up_move > down_move) & (up_move > 0), up_move, 0.0)
+    minus_dm = np.where((down_move > up_move) & (down_move > 0), down_move, 0.0)
+
+    tr1 = (high - low).abs()
+    tr2 = (high - prev_close).abs()
+    tr3 = (low - prev_close).abs()
+    tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+
+    tr_sm = _wilder_ema(tr, period)
+    plus_dm_sm = _wilder_ema(pd.Series(plus_dm, index=high.index), period)
+    minus_dm_sm = _wilder_ema(pd.Series(minus_dm, index=high.index), period)
+
+    plus_di = 100.0 * (plus_dm_sm / tr_sm.replace(0, np.nan))
+    minus_di = 100.0 * (minus_dm_sm / tr_sm.replace(0, np.nan))
+
+    dx = 100.0 * ((plus_di - minus_di).abs() / (plus_di + minus_di).replace(0, np.nan))
+    adx = _wilder_ema(dx, period)
+
+    return adx
+
 
 # -----------------------------
 # Validation
@@ -250,14 +291,14 @@ def main() -> int:
     df["logret_1"] = np.log(ratio).fillna(0.0)
     df["hl_range"] = (df["high"] - df["low"]) / df["close"]
 
-    # ---------- HTF Regime (4H) ----------
-    htf = os.getenv("HTF", "4H").upper()   # "4H" o "1D"
+   # ---------- HTF Regime (4H) + ADX gate ----------
+    htf = os.getenv("HTF", "4H").upper()     # "4H" (recomendado para el MVP)
     htf_ema = int(os.getenv("HTF_EMA", "200"))
+    adx_period = int(os.getenv("ADX_PERIOD", "14"))
 
     tmp = df[["datetime_utc", "open", "high", "low", "close", "volume"]].copy()
     tmp = tmp.set_index("datetime_utc")
 
-    # OHLCV 4H / 1D
     ohlc = tmp.resample(htf, label="right", closed="right").agg({
         "open": "first",
         "high": "max",
@@ -272,11 +313,16 @@ def main() -> int:
     # Regime: +1 bull, -1 bear
     ohlc["regime"] = np.where(ohlc["close"] >= ohlc[f"ema_{htf_ema}"], 1, -1)
 
-    # Alinear a 1H sin lookahead:
-    # - Cada vela 1H hereda el último régimen cerrado del HTF
+    # ADX en HTF
+    ohlc[f"adx_{htf.lower()}_{adx_period}"] = compute_adx(
+        ohlc["high"], ohlc["low"], ohlc["close"], period=adx_period
+    )
+
+    # Alinear a 1H sin lookahead: cada 1H hereda el último valor CERRADO del HTF
     df = df.set_index("datetime_utc")
-    df["regime_htf"] = ohlc["regime"].reindex(df.index, method="ffill")
-    df["regime_htf"] = df["regime_htf"].fillna(0).astype(int)
+    df["regime_htf"] = ohlc["regime"].reindex(df.index, method="ffill").fillna(0).astype(int)
+    df[f"adx_{htf.lower()}_{adx_period}"] = ohlc[f"adx_{htf.lower()}_{adx_period}"].reindex(df.index, method="ffill")
+
     df = df.reset_index()
 
 

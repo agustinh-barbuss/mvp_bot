@@ -1,0 +1,16 @@
+{
+  "run_id": "20260120_104824",
+  "train_days": 180,
+  "test_days": 90,
+  "min_test_bars": 300,
+  "windows": 27,
+  "equity_start": 10000.0,
+  "equity_end": 9092.748357747634,
+  "return_total_pct": -0.09072516422523658,
+  "profit_factor_mean": 2.155103732698658,
+  "profit_factor_median": 0.6632564316133471,
+  "sharpe_mean": -0.9228176571380571,
+  "dd_mean": -0.01807442320879387,
+  "winrate_mean": 0.322464675242453,
+  "note": "Walk-forward corre solo sobre ventanas TEST (90d) y encadena equity entre ventanas."
+}

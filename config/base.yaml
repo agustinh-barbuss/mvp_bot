@@ -26,6 +26,20 @@ strategy:
   min_atr_ratio: 0.0015
   breakout_buffer: 0.001
   atr_exp_mult: 1.05
+  adx_period: 14
+  adx_min_4h: 30
+  use_pullback_entry: true
+  pullback_max_wait_bars: 12
+  pullback_level: "channel"     # "channel" o "mid" (para un segundo experimento)
+  pullback_fallback_market: false
+  pullback_fallback_after_bars: 6   # igual al wait, o menor si querés
+  time_stop_bars: 72
+  use_take_profit: true
+  tp_r_mult: 2.0
+  use_time_stop: true
+  time_stop_bars: 72
+  time_stop_only_if_pnl_leq_zero: true
+  pullback_fallback_market: false
   
 
 

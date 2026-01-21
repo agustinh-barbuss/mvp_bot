@@ -1,0 +1,15 @@
+{
+  "run_id": "20260120_113552",
+  "train_days": 180,
+  "test_days": 90,
+  "min_test_bars": 300,
+  "windows": 27,
+  "equity_start": 10000.0,
+  "equity_end": 8933.202548294232,
+  "return_total_pct": -0.10667974517057688,
+  "profit_factor_median": 0.6298715529218194,
+  "trades_mean": 7.703703703703703,
+  "entry_limit_fills_total": 180,
+  "entry_fallback_market_total": 28,
+  "note": "WF TEST-only; equity chained. Entry = pullback limit with fallback market on expiration bar open."
+}

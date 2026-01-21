@@ -1,0 +1,14 @@
+{
+  "final_equity": 9798.253990144523,
+  "max_drawdown": 0.0,
+  "sharpe_approx": 3.0355164984102876,
+  "trades": 4,
+  "win_rate": 1.0,
+  "profit_factor": Infinity,
+  "avg_pnl": 118.124724170489,
+  "median_pnl": 118.67801813969237,
+  "avg_hold_bars": 40.75,
+  "long_trades": 4,
+  "short_trades": 0,
+  "avg_size_mult": 0.964
+}

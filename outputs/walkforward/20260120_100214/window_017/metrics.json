@@ -1,0 +1,14 @@
+{
+  "final_equity": 8248.58930702231,
+  "max_drawdown": -0.0265754134958347,
+  "sharpe_approx": 1.4757057405096667,
+  "trades": 20,
+  "win_rate": 0.45,
+  "profit_factor": 1.5580839766728434,
+  "avg_pnl": 12.424311446981331,
+  "median_pnl": -15.655003185668924,
+  "avg_hold_bars": 32.35,
+  "long_trades": 16,
+  "short_trades": 4,
+  "avg_size_mult": 0.8587
+}
